@@ -591,6 +591,95 @@ export default function SphereCanvas({ projects, onProjectClick, selectedProject
     // Adjusted camera position for realistic view
     camera.position.z = 20;
 
+    // Create parallax star field
+    const createStarField = () => {
+      const starGeometry = new THREE.BufferGeometry();
+      const starCount = 2000;
+      const positions = new Float32Array(starCount * 3);
+      const colors = new Float32Array(starCount * 3);
+      const sizes = new Float32Array(starCount);
+
+      for (let i = 0; i < starCount; i++) {
+        const i3 = i * 3;
+        
+        // Random positions in a large sphere
+        const radius = 40 + Math.random() * 60;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        
+        positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+        positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+        positions[i3 + 2] = radius * Math.cos(phi);
+
+        // Random colors (white to cyan/purple tints)
+        const colorChoice = Math.random();
+        if (colorChoice < 0.6) {
+          colors[i3] = colors[i3 + 1] = colors[i3 + 2] = 1; // White
+        } else if (colorChoice < 0.8) {
+          colors[i3] = 0.5; colors[i3 + 1] = 1; colors[i3 + 2] = 1; // Cyan tint
+        } else {
+          colors[i3] = 1; colors[i3 + 1] = 0.5; colors[i3 + 2] = 1; // Purple tint
+        }
+
+        // Random sizes
+        sizes[i] = Math.random() * 2 + 0.5;
+      }
+
+      starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      starGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      starGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+      const starMaterial = new THREE.PointsMaterial({
+        size: 0.1,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8,
+        sizeAttenuation: true
+      });
+
+      const stars = new THREE.Points(starGeometry, starMaterial);
+      scene.add(stars);
+      starsRef.current.push(stars);
+
+      // Add a second layer for parallax depth
+      const starGeometry2 = new THREE.BufferGeometry();
+      const positions2 = new Float32Array(starCount * 3);
+      const colors2 = new Float32Array(starCount * 3);
+      const sizes2 = new Float32Array(starCount);
+
+      for (let i = 0; i < starCount; i++) {
+        const i3 = i * 3;
+        const radius = 100 + Math.random() * 50;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        
+        positions2[i3] = radius * Math.sin(phi) * Math.cos(theta);
+        positions2[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+        positions2[i3 + 2] = radius * Math.cos(phi);
+
+        colors2[i3] = colors2[i3 + 1] = colors2[i3 + 2] = 0.7;
+        sizes2[i] = Math.random() * 1.5 + 0.3;
+      }
+
+      starGeometry2.setAttribute('position', new THREE.BufferAttribute(positions2, 3));
+      starGeometry2.setAttribute('color', new THREE.BufferAttribute(colors2, 3));
+      starGeometry2.setAttribute('size', new THREE.BufferAttribute(sizes2, 1));
+
+      const starMaterial2 = new THREE.PointsMaterial({
+        size: 0.08,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.5,
+        sizeAttenuation: true
+      });
+
+      const stars2 = new THREE.Points(starGeometry2, starMaterial2);
+      scene.add(stars2);
+      starsRef.current.push(stars2);
+    };
+
+    createStarField();
+
     // Enhanced lighting for vibrant colors
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(ambientLight);
@@ -779,6 +868,17 @@ export default function SphereCanvas({ projects, onProjectClick, selectedProject
       // Smooth rotation
       rotationRef.current.x += (targetRotationRef.current.x - rotationRef.current.x) * 0.1;
       rotationRef.current.y += (targetRotationRef.current.y - rotationRef.current.y) * 0.1;
+
+      // Smooth camera zoom
+      currentCameraZRef.current += (targetCameraZRef.current - currentCameraZRef.current) * 0.05;
+      camera.position.z = currentCameraZRef.current;
+
+      // Parallax star movement
+      starsRef.current.forEach((starField, index) => {
+        const parallaxFactor = index === 0 ? 0.02 : 0.01;
+        starField.rotation.y = rotationRef.current.y * parallaxFactor;
+        starField.rotation.x = rotationRef.current.x * parallaxFactor;
+      });
 
       // Inertia
       if (!isDraggingRef.current) {
