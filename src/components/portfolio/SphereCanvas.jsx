@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
@@ -15,6 +14,9 @@ export default function SphereCanvas({ projects, onProjectClick, selectedProject
   const rotationRef = useRef({ x: 0, y: 0 });
   const targetRotationRef = useRef({ x: 0, y: 0 });
   const velocityRef = useRef({ x: 0, y: 0 });
+  const starsRef = useRef([]);
+  const targetCameraZRef = useRef(20);
+  const currentCameraZRef = useRef(20);
 
   // Function to draw attractive custom icons for each category
   const drawCategoryIcon = (context, category, centerX, centerY, size) => {
@@ -752,7 +754,15 @@ export default function SphereCanvas({ projects, onProjectClick, selectedProject
         );
         if (clickedNode) {
           onProjectClick(clickedNode.project);
+          // Zoom in to planet
+          targetCameraZRef.current = 12;
         }
+      } else {
+        // Zoom out when clicking empty space
+        if (selectedProject) {
+          onProjectClick(null);
+        }
+        targetCameraZRef.current = 20;
       }
     };
 
@@ -832,6 +842,13 @@ export default function SphereCanvas({ projects, onProjectClick, selectedProject
     };
 
     animate();
+
+    // Handle zoom when selectedProject changes from parent
+    if (selectedProject) {
+      targetCameraZRef.current = 12;
+    } else {
+      targetCameraZRef.current = 20;
+    }
 
     // Window resize handler
     const handleResize = () => {
