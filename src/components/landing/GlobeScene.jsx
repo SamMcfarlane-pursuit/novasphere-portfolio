@@ -72,7 +72,7 @@ const COLORS = {
 
 // REALISTIC CLUSTERED NUCLEUS - Like protons/neutrons
 function Nucleus({ scale, opacity }) {
-    const groupRef = useRef();
+    const groupRef = useRef(null);
     const particlesRef = useRef([]);
 
     // Generate clustered nucleon positions (protons + neutrons arrangement)
@@ -318,9 +318,9 @@ function Electrons({ animationProgress, burstProgress }) {
 
 // Particle globe that forms from atom
 function ParticleGlobe({ mousePosition, introComplete, animationProgress }) {
-    const pointsRef = useRef();
-    const wireframeRef = useRef();
-    const glowRef = useRef();
+    const pointsRef = useRef(null);
+    const wireframeRef = useRef(null);
+    const glowRef = useRef(null);
 
     // Calculate phase-based progress
     const atomEnd = ATOM_DURATION / TOTAL_DURATION;
@@ -512,7 +512,7 @@ function ParticleGlobe({ mousePosition, introComplete, animationProgress }) {
 
 // Floating ambient particles
 function FloatingParticles({ animationProgress }) {
-    const pointsRef = useRef();
+    const pointsRef = useRef(null);
 
     const particles = useMemo(() => {
         const count = 200;
@@ -627,7 +627,7 @@ function Scene({ mousePosition, introComplete, setIntroComplete }) {
 
 // Exported component with canvas wrapper
 export default function GlobeScene({ onIntroComplete }) {
-    const containerRef = useRef();
+    const containerRef = useRef(null);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [introComplete, setIntroComplete] = useState(false);
 
