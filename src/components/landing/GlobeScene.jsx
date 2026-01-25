@@ -58,16 +58,31 @@ function CinematicCamera({ animationProgress, introComplete, setIntroComplete })
     return null;
 }
 
-// Unified color palette - WHITE/CREAM to match globe particles
+// Unified color palette - ELEGANT WHITE & GOLD THEME
 const COLORS = {
-    core: '#ffffff',        // Pure white core
-    coreGlow: '#e8e8ff',    // Soft white-blue glow
-    midGlow: '#a0a8c0',     // Muted silver-blue
-    outerGlow: '#3a4050',   // Dark ambient
-    electron: '#ffffff',    // Pure white electrons
-    electronGlow: '#c0c8e0',// Soft white glow
-    orbit: '#4a5570',       // Subtle orbit ring
-    particle: '#e0e4f0',    // Light particles
+    // Core nucleus - warm white to gold gradient
+    core: '#fffef8',          // Warm white core
+    coreGlow: '#ffd700',      // Pure gold glow
+    midGlow: '#e8c547',       // Champagne gold
+    outerGlow: '#c9a227',     // Deep amber gold
+
+    // Electrons - brilliant white with gold trails
+    electron: '#ffffff',      // Pure white electrons
+    electronGlow: '#fff4d6',  // Soft cream glow
+    electronTrail: '#ffd54f', // Gold trail
+
+    // Orbit rings - subtle gold
+    orbit: '#b8860b',         // Dark goldenrod orbits
+    orbitGlow: '#daa520',     // Goldenrod
+
+    // Globe particles - white to gold spectrum
+    particle: '#fffef5',      // Warm white particles
+    particleGold: '#ffeaa7',  // Light gold particles
+    particleDeep: '#f5d061',  // Deeper gold accent
+
+    // Ambient atmosphere
+    atmosphere: '#2a2015',    // Dark warm ambient
+    atmosphereGlow: '#3d2e1c',// Warm brown-gold ambient
 };
 
 // REALISTIC CLUSTERED NUCLEUS - Like protons/neutrons
@@ -128,7 +143,7 @@ function Nucleus({ scale, opacity }) {
 
     return (
         <group ref={groupRef} scale={scale}>
-            {/* Individual nucleon particles */}
+            {/* Individual nucleon particles - white and gold alternating */}
             {nucleons.map((nucleon, i) => (
                 <mesh
                     key={i}
@@ -137,60 +152,60 @@ function Nucleus({ scale, opacity }) {
                 >
                     <sphereGeometry args={[nucleon.size, 16, 16]} />
                     <meshBasicMaterial
-                        color={i % 2 === 0 ? '#ffffff' : '#e8e0f0'}
+                        color={i % 2 === 0 ? COLORS.core : COLORS.coreGlow}
                         transparent
                         opacity={opacity * 0.95}
                     />
                 </mesh>
             ))}
 
-            {/* Central energy glow */}
+            {/* Central energy glow - pure white */}
             <mesh>
                 <sphereGeometry args={[0.08, 24, 24]} />
                 <meshBasicMaterial
-                    color="#ffffff"
+                    color={COLORS.core}
                     transparent
-                    opacity={opacity * 0.7}
+                    opacity={opacity * 0.8}
                 />
             </mesh>
 
-            {/* Inner warm glow */}
+            {/* Inner gold glow - warm and brilliant */}
             <mesh scale={1.8}>
                 <sphereGeometry args={[0.1, 20, 20]} />
                 <meshBasicMaterial
-                    color="#ffe8d0"
+                    color={COLORS.coreGlow}
                     transparent
-                    opacity={opacity * 0.4}
+                    opacity={opacity * 0.5}
                 />
             </mesh>
 
-            {/* Mid glow layer */}
+            {/* Mid glow layer - champagne gold */}
             <mesh scale={3}>
                 <sphereGeometry args={[0.1, 16, 16]} />
                 <meshBasicMaterial
-                    color="#c8d0e0"
+                    color={COLORS.midGlow}
                     transparent
-                    opacity={opacity * 0.25}
+                    opacity={opacity * 0.3}
                 />
             </mesh>
 
-            {/* Outer atmospheric glow */}
+            {/* Outer atmospheric glow - deep amber */}
             <mesh scale={5}>
                 <sphereGeometry args={[0.1, 16, 16]} />
                 <meshBasicMaterial
-                    color="#505868"
+                    color={COLORS.outerGlow}
                     transparent
-                    opacity={opacity * 0.12}
+                    opacity={opacity * 0.15}
                 />
             </mesh>
 
-            {/* Soft corona */}
+            {/* Soft golden corona */}
             <mesh scale={8}>
                 <sphereGeometry args={[0.1, 12, 12]} />
                 <meshBasicMaterial
-                    color="#303840"
+                    color={COLORS.atmosphere}
                     transparent
-                    opacity={opacity * 0.05}
+                    opacity={opacity * 0.08}
                 />
             </mesh>
         </group>
@@ -204,13 +219,13 @@ function Electrons({ animationProgress, burstProgress }) {
     const outerGlowRefs = useRef([]);
     const orbitRefs = useRef([]);
 
-    // 5 electrons on elegant intersecting orbital planes
+    // 5 electrons on elegant intersecting orbital planes - white/gold spectrum
     const orbits = useMemo(() => [
-        { radius: 0.5, speed: 1.8, tiltX: 0, tiltZ: 0, phase: 0, color: '#ffffff' },
-        { radius: 0.62, speed: -1.5, tiltX: Math.PI / 3, tiltZ: Math.PI / 8, phase: Math.PI * 0.4, color: '#f8f0ff' },
-        { radius: 0.55, speed: 1.6, tiltX: -Math.PI / 4, tiltZ: -Math.PI / 6, phase: Math.PI * 0.8, color: '#fff8f0' },
-        { radius: 0.68, speed: -1.3, tiltX: Math.PI / 6, tiltZ: Math.PI / 3, phase: Math.PI * 1.2, color: '#f0f8ff' },
-        { radius: 0.58, speed: 1.4, tiltX: -Math.PI / 5, tiltZ: Math.PI / 4, phase: Math.PI * 1.6, color: '#fffff0' },
+        { radius: 0.5, speed: 1.8, tiltX: 0, tiltZ: 0, phase: 0, color: COLORS.electron },
+        { radius: 0.62, speed: -1.5, tiltX: Math.PI / 3, tiltZ: Math.PI / 8, phase: Math.PI * 0.4, color: COLORS.particle },
+        { radius: 0.55, speed: 1.6, tiltX: -Math.PI / 4, tiltZ: -Math.PI / 6, phase: Math.PI * 0.8, color: COLORS.particleGold },
+        { radius: 0.68, speed: -1.3, tiltX: Math.PI / 6, tiltZ: Math.PI / 3, phase: Math.PI * 1.2, color: COLORS.electron },
+        { radius: 0.58, speed: 1.4, tiltX: -Math.PI / 5, tiltZ: Math.PI / 4, phase: Math.PI * 1.6, color: COLORS.particle },
     ], []);
 
     useFrame((state) => {
@@ -261,7 +276,7 @@ function Electrons({ animationProgress, burstProgress }) {
             if (orbitRefs.current[i]) {
                 orbitRefs.current[i].rotation.x = orbit.tiltX;
                 orbitRefs.current[i].rotation.z = orbit.tiltZ;
-                const ringOpacity = Math.max(0, 0.15 - burstProgress * 0.3);
+                const ringOpacity = Math.max(0, 0.2 - burstProgress * 0.35);
                 orbitRefs.current[i].material.opacity = ringOpacity;
             }
         });
@@ -271,7 +286,7 @@ function Electrons({ animationProgress, burstProgress }) {
         <group>
             {orbits.map((orbit, i) => (
                 <group key={i}>
-                    {/* Electron core - bright white point */}
+                    {/* Electron core - brilliant white/gold point */}
                     <mesh ref={el => electronsRef.current[i] = el}>
                         <sphereGeometry args={[0.035, 16, 16]} />
                         <meshBasicMaterial
@@ -281,33 +296,33 @@ function Electrons({ animationProgress, burstProgress }) {
                         />
                     </mesh>
 
-                    {/* Inner glow - bright halo */}
+                    {/* Inner glow - warm cream halo */}
                     <mesh ref={el => glowRefs.current[i] = el}>
                         <sphereGeometry args={[0.07, 12, 12]} />
                         <meshBasicMaterial
-                            color="#e8e0f8"
+                            color={COLORS.electronGlow}
                             transparent
                             opacity={0.6}
                         />
                     </mesh>
 
-                    {/* Outer glow - soft atmosphere */}
+                    {/* Outer glow - soft gold atmosphere */}
                     <mesh ref={el => outerGlowRefs.current[i] = el}>
                         <sphereGeometry args={[0.12, 10, 10]} />
                         <meshBasicMaterial
-                            color="#a0a8c0"
+                            color={COLORS.particleDeep}
                             transparent
                             opacity={0.3}
                         />
                     </mesh>
 
-                    {/* Orbit path - elegant thin ring */}
+                    {/* Orbit path - elegant goldenrod ring */}
                     <mesh ref={el => orbitRefs.current[i] = el}>
                         <torusGeometry args={[orbit.radius, 0.002, 8, 120]} />
                         <meshBasicMaterial
-                            color="#8890a0"
+                            color={COLORS.orbit}
                             transparent
-                            opacity={0.15}
+                            opacity={0.2}
                         />
                     </mesh>
                 </group>
@@ -369,13 +384,13 @@ function ParticleGlobe({ mousePosition, introComplete, animationProgress }) {
             positions[i * 3 + 1] = sy;
             positions[i * 3 + 2] = sz;
 
-            // Colors - WHITE/CREAM gradient to match atom
+            // Colors - WHITE to GOLD gradient for stunning gold theme
             const heightFactor = (ty + radius) / (radius * 2);
-            const intensity = 0.7 + Math.random() * 0.3;
-            // White-cream gradient: balanced RGB for white effect
-            colors[i * 3] = intensity * (0.85 + heightFactor * 0.15);    // High red
-            colors[i * 3 + 1] = intensity * (0.88 + heightFactor * 0.12); // High green
-            colors[i * 3 + 2] = intensity * (0.95 + heightFactor * 0.05); // Highest blue (slight cool tint)
+            const intensity = 0.75 + Math.random() * 0.25;
+            // White-gold gradient: warm white at top, golden at bottom
+            colors[i * 3] = intensity * (0.95 + heightFactor * 0.05);       // High red (warm)
+            colors[i * 3 + 1] = intensity * (0.85 + heightFactor * 0.10);   // Med-high green (gold tone)
+            colors[i * 3 + 2] = intensity * (0.60 + heightFactor * 0.20);   // Lower blue (warm gold)
         }
 
         return { positions, targetPositions, colors };
@@ -597,9 +612,9 @@ function Scene({ mousePosition, introComplete, setIntroComplete }) {
                 introComplete={introComplete}
                 setIntroComplete={setIntroComplete}
             />
-            <ambientLight intensity={0.15} />
-            <pointLight position={[10, 10, 10]} intensity={0.2} color="#4080ff" />
-            <pointLight position={[-10, -10, -10]} intensity={0.1} color="#2040a0" />
+            <ambientLight intensity={0.2} color="#fff8e0" />
+            <pointLight position={[10, 10, 10]} intensity={0.3} color="#ffd700" />
+            <pointLight position={[-10, -10, -10]} intensity={0.15} color="#c9a227" />
 
             {/* Atom components (visible during atom & burst phases) */}
             {nucleusOpacity > 0 && (
@@ -657,7 +672,7 @@ export default function GlobeScene({ onIntroComplete }) {
             ref={containerRef}
             className="absolute inset-0 z-0"
             style={{
-                background: 'radial-gradient(ellipse at 50% 30%, #0a1520 0%, #050a10 50%, #000000 100%)'
+                background: 'radial-gradient(ellipse at 50% 30%, #1a1408 0%, #0d0a04 50%, #050402 100%)'
             }}
         >
             <Canvas
@@ -698,11 +713,11 @@ export default function GlobeScene({ onIntroComplete }) {
                 }}
             />
 
-            {/* Ambient glow effect */}
+            {/* Ambient golden glow effect */}
             <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                    background: 'radial-gradient(circle at 50% 35%, rgba(20, 60, 100, 0.15) 0%, transparent 45%)'
+                    background: 'radial-gradient(circle at 50% 35%, rgba(255, 200, 100, 0.08) 0%, transparent 45%)'
                 }}
             />
         </div>
