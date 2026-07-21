@@ -16,7 +16,7 @@ The portfolio dynamically renders data for several end-to-end production AI appl
 - **Three.js** / **React Three Fiber** — 3D globe and particle effects
 - **Framer Motion** — Smooth page transitions and animations
 - **TailwindCSS** — Utility-first styling
-- **Vercel** — Production deployment
+- **Netlify** — Production deployment
 
 ## Getting Started
 
@@ -36,9 +36,13 @@ npm run dev
 
 ## Deployment
 
-This project is deployed on [Vercel](https://mcfarlane-ide-consulting.vercel.app).
+This project is configured for [Netlify](https://www.netlify.com) via `netlify.toml`:
 
-Push to `main` to trigger an automatic production deployment.
+- **Build command:** `npm run build`
+- **Publish directory:** `dist`
+- Client-side routing (React Router) is handled with a catch-all redirect to `index.html`.
+
+To connect this repository, create a new site in the Netlify dashboard from this Git repo — the build settings are picked up automatically from `netlify.toml`. Push to `main` to trigger an automatic production deployment.
 
 ## License
 
